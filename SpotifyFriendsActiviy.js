@@ -5,7 +5,7 @@
 // @author       baldandbrave https://github.com/baldandbrave
 // @supportURL   https://github.com/baldandbrave/spotify_friends_activity_userscript/issues
 // @match        https://open.spotify.com/*
-// @connect      https://spclient.wg.spotify.com
+// @connect      spclient.wg.spotify.com
 // @grant        GM.xmlHttpRequest
 // ==/UserScript==
 
