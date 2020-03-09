@@ -1,9 +1,8 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 # Spotify friends activity
 Show Spotify friends activity on open.spotify.com
-
 ## **Warning: Limited User Experience Expected**
-**Eagerly welcome contribution**
+**Eagerly welcome contribution** ![s'il vous plait](http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/af/kl_thumb.gif "S'il vous plait!")
 
 ## Known Issues
 - [ ] Clicking a link in the friends activity tab will fire a page refresh instead of a React-like dom modification, which will stop the playback.
