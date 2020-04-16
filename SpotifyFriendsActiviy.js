@@ -10,75 +10,75 @@
 // ==/UserScript==
 
 (async function () {
-  'use strict';
-  let tokenRequest = new Promise(resolve => {
-    GM.xmlHttpRequest(
-      {
-        method: 'GET',
-        url: 'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
-        headers: {
-          'Cookie': document.cookie,
-          'User-Agent': navigator.userAgent
-        },
-        onload: (res) => {
-          // accessToken = JSON.parse(res.responseText).accessToken;
-          // Promise.resolve(JSON.parse(res.responseText).accessToken);
-          resolve(JSON.parse(res.responseText).accessToken);
-        }
-      }
-    );
-  });
+    'use strict';
+    let tokenRequest = new Promise(resolve => {
+        GM.xmlHttpRequest(
+            {
+                method: 'GET',
+                url: 'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
+                headers: {
+                    'Cookie': document.cookie,
+                    'User-Agent': navigator.userAgent
+                },
+                onload: (res) => {
+                    // accessToken = JSON.parse(res.responseText).accessToken;
+                    // Promise.resolve(JSON.parse(res.responseText).accessToken);
+                    resolve(JSON.parse(res.responseText).accessToken);
+                }
+            }
+        );
+    });
 
-  let accessToken = await tokenRequest;
+    let accessToken = await tokenRequest;
 
-  // idea from https://github.com/spotify/web-api/issues/83#issuecomment-573150153
-  let friendListRequest = new Promise(resolve => {
-    GM.xmlHttpRequest(
-      {
-        method: 'GET',
-        url: 'https://spclient.wg.spotify.com/presence-view/v1/buddylist',
-        headers: {
-          Authorization: 'Bearer ' + accessToken,
-        },
-        onload: (res) => {
-          // friendListData = JSON.parse(res.responseText).friends;
-          resolve(JSON.parse(res.responseText).friends);
-        }
-      }
-    );
-  });
-  let friendListData = await friendListRequest;
+    // idea from https://github.com/spotify/web-api/issues/83#issuecomment-573150153
+    let friendListRequest = new Promise(resolve => {
+        GM.xmlHttpRequest(
+            {
+                method: 'GET',
+                url: 'https://spclient.wg.spotify.com/presence-view/v1/buddylist',
+                headers: {
+                    Authorization: 'Bearer ' + accessToken,
+                },
+                onload: (res) => {
+                    // friendListData = JSON.parse(res.responseText).friends;
+                    resolve(JSON.parse(res.responseText).friends);
+                }
+            }
+        );
+    });
+    let friendListData = await friendListRequest;
 
-  let innerHTML = '';
-  let friendListHeader = `
+    let innerHTML = '';
+    let friendListHeader = `
   <span class="connect-device-picker">
       <div class="connect-device-list-container" style="width: 700px;">
           <div class="connect-device-list-content">
               <div class="connect-title" style="text-align: left;">
                   <h3 class="connect-title__text" tabindex="-1">Friends Activity</h3>
               </div>`
-  innerHTML += friendListHeader;
+    innerHTML += friendListHeader;
 
-  friendListData.forEach(element => {
-    let userid = element.user.uri.split(':').pop();
-    let username = element.user.name;
-    let trackID = element.track.uri.split(':').pop();
-    let trackName = element.track.name;
-    // single/multiple artists cases
-    let artistID = element.track.artist.uri.split(':').pop();
-    let artistName = element.track.artist.name;
-    let albumID = element.track.album.uri.split(':').pop();
-    let albumName = element.track.album.name;
-    let hoursAgo = Math.floor((Date.now() - element.timestamp) / 36e5)
+    friendListData.forEach(element => {
+        let userid = element.user.uri.split(':').pop();
+        let username = element.user.name;
+        let trackID = element.track.uri.split(':').pop();
+        let trackName = element.track.name;
+        // single/multiple artists cases
+        let artistID = element.track.artist.uri.split(':').pop();
+        let artistName = element.track.artist.name;
+        let albumID = element.track.album.uri.split(':').pop();
+        let albumName = element.track.album.name;
+        let hoursAgo = Math.floor((Date.now() - element.timestamp) / 36e5)
 
-    let userNameDiv = `
+        let userNameDiv = `
       <!-- removable or display avatar and username -->
       <!-- for h4 username, maybe add href -->
       <div class="connect-header" style="padding: 0px 27px; font-size: 18px; color: #fff; text-align: left; display: flex;">
         <h4><a href="/user/${userid}">${username}</a></h4><h5>&nbsp;&nbsp;&nbsp;&nbsp;${hoursAgo}&nbsp;hours ago</h5>
       </div>`
-    innerHTML += userNameDiv;
-    let trackDiv = `
+        innerHTML += userNameDiv;
+        let trackDiv = `
       <div class="connect-info" style="padding: 10px 15px;">
         <li class="tracklist-row" role="button" tabindex="0" data-testid="tracklist-row">
             <div class="tracklist-col position-outer">
@@ -124,9 +124,9 @@
         </li>
       </div>
     `
-    innerHTML += trackDiv;
-  });
-  let freindListButton = `
+        innerHTML += trackDiv;
+    });
+    let freindListButton = `
   </div>
   </div>
   <!-- add before in button, add popup eventlistener-->
@@ -134,15 +134,16 @@
   <button class="spoticon-devices-16 control-button" aria-label="Connect to a device" id="friendListButton"></button>
   </span>
   `
-  innerHTML += freindListButton;
-
-  let extraControl = document.querySelector('.ExtraControls');
-  let friendListWrapper = document.createElement('div');
-  friendListWrapper.classList.add('ExtraControls__connect-device-picker');
-  friendListWrapper.innerHTML = innerHTML;
-  extraControl.prepend(friendListWrapper);
-  let buttonInDom = document.querySelector('#friendListButton');
-  buttonInDom.addEventListener('click',()=>{document.querySelector('div.connect-device-list-container').classList.toggle('connect-device-list-container--is-visible')});
-  let nowPlayingBarRightInner = document.querySelector("div.now-playing-bar__right__inner");
-  nowPlayingBarRightInner.style.width='auto';
+    innerHTML += freindListButton;
+    setTimeout(() => {
+        let extraControl = document.querySelector('.ExtraControls');
+        let friendListWrapper = document.createElement('div');
+        friendListWrapper.classList.add('ExtraControls__connect-device-picker');
+        friendListWrapper.innerHTML = innerHTML;
+        extraControl.prepend(friendListWrapper);
+        let buttonInDom = document.querySelector('#friendListButton');
+        buttonInDom.addEventListener('click', () => { document.querySelector('div.connect-device-list-container').classList.toggle('connect-device-list-container--is-visible') });
+        let nowPlayingBarRightInner = document.querySelector("div.now-playing-bar__right__inner");
+        nowPlayingBarRightInner.style.width = 'auto';
+    }, 2000);
 })();
