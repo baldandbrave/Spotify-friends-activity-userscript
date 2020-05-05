@@ -142,7 +142,8 @@
         friendListWrapper.innerHTML = innerHTML;
         extraControl.prepend(friendListWrapper);
         let buttonInDom = document.querySelector('#friendListButton');
-        buttonInDom.addEventListener('click', () => { document.querySelector('div.connect-device-list-container').classList.toggle('connect-device-list-container--is-visible') });
+        buttonInDom.addEventListener('click', () => { document.querySelector('div.connect-device-list-container').classList.add('connect-device-list-container--is-visible') });
+        buttonInDom.addEventListener('focusout', () => { document.querySelector('div.connect-device-list-container').classList.remove('connect-device-list-container--is-visible') });
         let nowPlayingBarRightInner = document.querySelector("div.now-playing-bar__right__inner");
         nowPlayingBarRightInner.style.width = 'auto';
     }, 2000);
